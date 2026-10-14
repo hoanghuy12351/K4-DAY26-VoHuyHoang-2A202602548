@@ -1,5 +1,5 @@
 google-genai>=1.0.0
-# MCP SDK v2: dùng mcp.server.mcpserver.MCPServer và streamable_http_client (trả về 2 stream)
+# MCP SDK v2 dependencies
 mcp[cli]>=2.0.0,<3
 packaging>=23.0
 uvicorn>=0.34.0

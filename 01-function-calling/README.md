@@ -1,13 +1,13 @@
 # 01 — Function Calling thuần (Google Gemini SDK)
 
-Tool `get_weather` được **định nghĩa schema thủ công** và **thực thi ngay trong app**.
+Hai tool `get_weather` và `get_forecast` được **định nghĩa schema thủ công** và **thực thi ngay trong app**.
 Model chỉ quyết định gọi tool nào — app mới là nơi chạy.
 
 ```
-User hỏi  →  Model quyết định gọi get_weather(city="Hà Nội")
+User hỏi  →  Model quyết định gọi get_forecast(city="Hà Nội", days=2)
                      │
                      ▼
-              App TỰ THỰC THI hàm get_weather
+              App TỰ THỰC THI hàm get_forecast
                      │
                      ▼
               Model tổng hợp câu trả lời
@@ -15,11 +15,15 @@ User hỏi  →  Model quyết định gọi get_weather(city="Hà Nội")
 
 ## Cách chạy
 
-```bash
+```powershell
 pip install -r ../requirements.txt
-export GEMINI_API_KEY=...
+$env:GEMINI_API_KEY = "..."  # PowerShell
 python weather_function_calling.py
 ```
+
+Chương trình hỏi câu hỏi khi chạy. Ví dụ: `Thời tiết hiện tại ở Hà Nội thế nào?` hoặc `Dự báo Hà Nội hôm nay và ngày mai?`.
+
+`get_weather` giữ dữ liệu mẫu của bài học. `get_forecast` lấy dự báo từ Open-Meteo, không cần key thời tiết. Chỉ cần `GEMINI_API_KEY` để Gemini chọn tool và diễn đạt kết quả. `days=2` gồm hôm nay và ngày mai.
 
 ## File
 
@@ -157,7 +161,7 @@ get_weather_declaration = types.FunctionDeclaration(
 ```python
 # App phải CÓ hàm thật để chạy — model không chạy hàm này
 def get_weather(city: str) -> str:
-    return json.dumps({"city": city, "nhiệt_độ": "29°C", ...})
+    return json.dumps({"city": city, "nhiệt_độ": "29°C", ...})  # dữ liệu mẫu
 ```
 
 **Phần 3 — Vòng lặp** (nhận yêu cầu → chạy → trả lại):
@@ -165,7 +169,8 @@ def get_weather(city: str) -> str:
 ```python
 while resp.function_calls:
     for fc in resp.function_calls:
-        result = get_weather(**fc.args)   # ← APP chạy, không phải model
+        tool = tool_functions[fc.name]
+        result = tool(**fc.args)   # ← APP chạy, không phải model
     # gửi result lại cho model để tổng hợp câu trả lời
 ```
 

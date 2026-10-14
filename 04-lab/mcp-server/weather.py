@@ -50,7 +50,7 @@ async def get_current_weather(city: str) -> str:
     """Get current weather conditions for a city.
 
     Args:
-        city: City name (e.g., "Hanoi", "Haiphong", "Danang", "Brisbane", "Sydney")
+        city: Any city supported by WeatherAPI (for example, Tokyo or Hanoi).
     """
     params = {
         "q": city,
@@ -87,8 +87,8 @@ async def get_forecast(city: str, days: int = 3) -> str:
     """Get weather forecast for a city.
 
     Args:
-        city: City name (e.g., "Hanoi", "Haiphong", "Danang", "Brisbane", "Sydney", "Melbourne")
-        days: Number of days to forecast (1-3 for free tier, max 10 for paid)
+        city: Any city supported by WeatherAPI (for example, Tokyo or Hanoi).
+        days: Number of days to forecast, capped at 3 by this tool.
     """
     # Limit days to 3 for free tier
     days = min(days, 3)

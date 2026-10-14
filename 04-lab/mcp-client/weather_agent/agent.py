@@ -36,6 +36,12 @@ try:
     root_agent = Agent(
         name="weather_agent",
         model="gemini-2.5-flash",
+        instruction=(
+            "For weather requests, call the appropriate weather tool with the city "
+            "the user asked for. City names in tool descriptions are examples, "
+            "not a list of allowed cities. If a tool cannot fetch the data, "
+            "report that error instead of inventing weather conditions."
+        ),
         tools=[weather_tools],
     )
     logger.info("✅ Weather agent initialized with remote MCP tools:")
